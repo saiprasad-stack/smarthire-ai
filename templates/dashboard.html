@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="navbar">
+    <h2>SmartHire AI Recruitment</h2>
+    <a href="/logout" class="logout">Logout</a>
+</div>
+
+<div class="container">
+
+    
+
+    <p>Welcome! Your role is <strong>{{ role }}</strong></p>
+
+    <hr>
+
+    {% if role == 'hr' %}
+
+    <div class="card">
+        <h2>Post Job</h2>
+        <form action="/post_job" method="POST">
+            <input type="text" name="title" placeholder="Job Title" required>
+            <textarea name="description" placeholder="Job Description" required></textarea>
+            <button type="submit">Post Job</button>
+        </form>
+    </div>
+
+    <h2>Your Posted Jobs</h2>
+
+    {% for job in jobs %}
+    <div class="card">
+        <h3>{{ job[1] }}</h3>
+        <p>{{ job[2] }}</p>
+        <a href="/view_applications/{{ job[0] }}">View Applications</a>
+    </div>
+    {% endfor %}
+
+    {% else %}
+
+    <h2>Available Jobs</h2>
+
+    {% for job in jobs %}
+    <div class="card">
+        <h3>{{ job[1] }}</h3>
+        <p>{{ job[2] }}</p>
+
+        <form action="/apply/{{ job[0] }}" method="POST" enctype="multipart/form-data">
+            <input type="file" name="resume" required>
+            <button type="submit">Apply</button>
+        </form>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

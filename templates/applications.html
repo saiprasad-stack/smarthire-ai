@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Applications</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="navbar">
+    <h2>SmartHire AI Recruitment</h2>
+    <a href="/dashboard">Dashboard</a>
+</div>
+
+<div class="container">
+
+    <h2>Applications (Sorted by Match Score)</h2>
+
+    {% for app in applications %}
+    <div class="card">
+
+        {% if loop.index == 1 %}
+            <span class="badge">Top Candidate</span>
+        {% endif %}
+
+        <h3>{{ app[0] }}</h3>
+        <p><strong>Resume:</strong> {{ app[1] }}</p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ app[2] }}%;">
+                {{ app[2] }}%
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>
