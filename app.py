@@ -10,14 +10,11 @@ app.secret_key = os.environ.get("SECRET_KEY")
 
 # PostgreSQL Connection Function
 def get_db_connection():
-    conn = psycopg2.connect(
-        dbname=os.environ.get("DB_NAME"),
-        user=os.environ.get("DB_USER"),
-        password=os.environ.get("DB_PASSWORD"),
-        host=os.environ.get("DB_HOST"),
-        port=os.environ.get("DB_PORT")
-    )
+    database_url = os.environ.get("DATABASE_URL")
+
+    conn = psycopg2.connect(database_url)
     return conn
+
 
 
 # Home Page
