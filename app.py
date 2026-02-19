@@ -173,6 +173,45 @@ def logout():
     session.clear()
     return redirect('/')
 
+@app.route("/init-db")
+def init_db():
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name TEXT,
+        email TEXT UNIQUE,
+        password TEXT,
+        role TEXT
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS jobs (
+        id SERIAL PRIMARY KEY,
+        title TEXT,
+        description TEXT,
+        posted_by INTEGER REFERENCES users(id)
+    );
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS applications (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        job_id INTEGER REFERENCES jobs(id),
+        resume_path TEXT,
+        score FLOAT
+    );
+    """)
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return "Database tables created!"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
