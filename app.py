@@ -4,8 +4,16 @@ import psycopg2
 import os
 from resume_analyzer import extract_text_from_pdf, calculate_similarity
 
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
+# -------- FILE UPLOAD SETUP (FOR RAILWAY) --------
+UPLOAD_FOLDER = "/tmp/uploads"   # Railway-safe folder
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+# -----------------------------------------------
+
 
 
 # PostgreSQL Connection Function
@@ -113,8 +121,12 @@ def apply(job_id):
         return "Unauthorized"
 
     file = request.files['resume']
-    filepath = os.path.join('uploads', file.filename)
+    if not file:
+         return "No file uploaded"
+    filename = file.filename
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     file.save(filepath)
+    
 
     resume_text = extract_text_from_pdf(filepath)
 
